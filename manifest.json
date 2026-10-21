@@ -1,0 +1,11 @@
+{
+  "name": "Setup Shuffler",
+  "short_name": "Setup",
+  "description": "Randomise setup for board and card games",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#173229",
+  "theme_color": "#173229",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

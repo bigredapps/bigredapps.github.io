@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Setup Shuffler</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="theme-color" content="#173229">
+<style>
+:root{--bg:#173229;--panel:#20443a;--border:#346152;--accent:#d9a441;--text:#efe9da;--muted:#a9bdb2;--on-accent:#2a1d05;--warn:#ffb38a;
+--glow:color-mix(in srgb,var(--bg) 82%,white);--accent-dark:color-mix(in srgb,var(--accent) 60%,black);
+--head:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;color:var(--text);font:16px/1.45 system-ui,-apple-system,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);min-height:100vh;background:radial-gradient(120% 60% at 50% 0,var(--glow),var(--bg) 70%)}
+main{max-width:720px;margin:0 auto;padding:16px}
+h1,h2,.go,.tile span,.big{font-family:var(--head)}
+h1{margin:0;font-size:1.8rem;line-height:1.15}
+h2{margin:0;font-size:1.15rem;color:var(--accent)}
+a{color:var(--accent)}
+.sub{color:var(--muted);margin:4px 0 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:18px}
+.tile{display:block;background:var(--panel);border:1px solid var(--border);border-radius:4px 18px 4px 18px;overflow:hidden;text-decoration:none;color:inherit}
+.tile img,.ph{width:100%;aspect-ratio:4/3;object-fit:cover;display:grid;place-items:center;font-size:3rem;background:var(--border)}
+.tile span{display:block;padding:10px 12px;font-weight:bold}
+.hero{display:flex;gap:14px;align-items:center;margin:14px 0}
+.hero img,.hero .ph{width:96px;height:96px;flex:none;border-radius:4px 22px 4px 22px;font-size:2.6rem}
+.hero p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:14px 0}
+.ctl label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted)}
+.ctl label.tg{flex-direction:row;align-items:center;gap:10px;font-size:1rem;color:var(--text)}
+.tg input{width:22px;height:22px;accent-color:var(--accent)}
+select{font:inherit;padding:9px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text)}
+.go{width:100%;font-size:1.2rem;font-weight:bold;padding:16px;border:0;border-radius:14px;background:var(--accent);color:var(--on-accent);box-shadow:0 4px 0 var(--accent-dark);margin:4px 0 10px}
+.go:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent-dark)}
+:focus-visible{outline:3px solid var(--text);outline-offset:2px}
+.step{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:12px 0}
+.sh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rr{border:1px solid var(--border);background:none;color:var(--accent);border-radius:8px;font-size:1.2rem;width:38px;height:38px}
+.item{display:flex;gap:12px;align-items:center;padding:8px 0}
+.item+.item,.pp+.pp,li+li{border-top:1px solid var(--border)}
+.item img{width:44px;height:44px;border-radius:8px;object-fit:cover}
+.ic{font-size:1.8rem;width:44px;text-align:center}
+.item small{display:block;color:var(--muted)}
+.pp{display:flex;align-items:center;gap:8px}.pp em{width:68px;font-style:normal;color:var(--muted);font-size:.85rem}
+.pp .item{padding:6px 0;border:0}
+ol{padding-left:22px;margin:6px 0}li .item{padding:6px 0;border:0}
+.big{font-size:2.6rem;font-weight:bold;color:var(--text)}
+.note,.txt{color:var(--muted);margin:4px 0}
+.warn{color:var(--warn)}
+.callout{border-left:4px solid var(--accent);padding:8px 14px;margin:12px 0;background:rgba(0,0,0,.15)}
+.step.row{display:grid;grid-template-columns:minmax(80px,28%) 1fr auto;gap:4px 12px;align-items:center;padding:8px 12px}
+.row h2{font-size:1rem}.row .note,.row .warn{margin:2px 0 0;font-size:.8rem}
+.chips{display:flex;flex-wrap:wrap;gap:4px 14px}
+.chip{display:inline-flex;align-items:center;gap:5px}.chip em{font-style:normal;color:var(--muted);font-size:.8rem}
+.chip .ic{width:auto;font-size:1.25rem}.chip img{width:26px;height:26px;border-radius:6px;object-fit:cover}
+.big.sm{font-size:1.5rem;line-height:1.2}
+@media(prefers-reduced-motion:no-preference){.go{transition:transform .08s,box-shadow .08s}}
+</style>
+</head>
+<body><main id="app">Loading…</main><script src="app.js"></script></body>
+</html>
