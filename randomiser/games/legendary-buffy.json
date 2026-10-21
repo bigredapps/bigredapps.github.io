@@ -1,0 +1,158 @@
+{
+	"name": "Legendary: Buffy The Vampire Slayer",
+	"icon": "🧛",
+	"image": "img/legendary-buffy.jpg",
+	"description": "Semi-cooperative deck-building game.",
+	"theme": {
+		"background": "#14101a",
+		"glow": "#2a1624",
+		"panel": "#211a2b",
+		"border": "#43324a",
+		"accent": "#c8102e",
+		"accentText": "#ffffff",
+		"text": "#f1e9ee",
+		"muted": "#b8a7b4",
+		"warn": "#ffb454",
+		"font": "'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif"
+	},
+	"players": { "min": 1, "max": 5, "default": 1 },
+	"sort": true,
+	"compact": true,
+	
+	"options": [
+		{ "id": "advanced", "label": "Advanced (1-player only)", "type": "toggle", "default": false },
+		{ "id": "enforce_always_leads", "label": "Enforce 'Always leads'", "type": "choice", "default": "standard",
+			"choices": [
+				{ "id": "standard", "label": "Standard" },
+				{ "id": "always", "label": "Always" },
+				{ "id": "never", "label": "Never" }
+			]
+		},
+		{ "id": "allow-angel-angelus", "label": "Allow Angel + Angelus", "type": "toggle", "default": true}
+	],
+	
+	"pools": {
+		"big-bads": [
+			{ "id": "angelus", "name": "Angelus", "note": "The Scourge of Europe" },
+			{ "id": "first", "name": "The First", "note": "The First's minions" },
+			{ "id": "glorificus", "name": "Glorificus", "note": "Glory's minions" },
+			{ "id": "master", "name": "The Master", "note": "Order of Aurelius" },
+			{ "id": "mayor", "name": "The Mayor", "note": "The Mayor's minions" }
+		],
+		"schemes": [
+			{ "id": "convert-to-evil", "name": "Convert to evil" },
+			{ "id": "darkness-falls", "name": "Darkness falls" },
+			{ "id": "epic-struggle", "name": "Epic struggle" },
+			{ "id": "hellmouth-opening", "name": "Hellmouth opening" },
+			{ "id": "road-to-damnation", "name": "Road to damnation" },
+			{ "id": "summon-the-uber-vamps", "name": "Summon the uber vamps" },
+			{ "id": "twilight-terror", "name": "Twilight terror" },
+			{ "id": "vile-agenda", "name": "Vile agenda" }
+		],
+		"villains": [
+			{ "id": "demons", "name": "Demons" },
+			{ "id": "firsts-minions", "name": "The First's minions" },
+			{ "id": "glorys-minions", "name": "Glory's minions" },
+			{ "id": "harmonys-gang", "name": "Harmony's gang" },
+			{ "id": "mayors-minions", "name": "The Mayor's minions" },
+			{ "id": "order-of-aurelius", "name": "The Order of Aurelius" },
+			{ "id": "scourge-of-europe", "name": "The scourge of Europe" }
+		],
+		"henchmen": [
+			{ "id": "harbingers", "name": "Harbingers of Death" },
+			{ "id": "hellhounds", "name": "Hellhounds" },
+			{ "id": "shark-gangsters", "name": "Shark gangsters" },
+			{ "id": "turok-han", "name": "Turok-Han vampires" },
+			{ "id": "vampire-initiates", "name": "Vampire inititates" }
+		],
+		"heroes": [
+			{ "id": "angel", "name": "Angel" },
+			{ "id": "anya", "name": "Anya Jenkins" },
+			{ "id": "buffy", "name": "Buffy Summers" },
+			{ "id": "buffybot", "name": "Buffybot" },
+			{ "id": "cordelia", "name": "Cordelia Chase" },
+			{ "id": "oz", "name": "Daniel 'Oz' Osbourne" },
+			{ "id": "first-slayer", "name": "The First Slayer" },
+			{ "id": "jenny", "name": "Jenny Calendar" },
+			{ "id": "faith", "name": "Faith Lehane" },
+			{ "id": "riley", "name": "Riley Finn" },
+			{ "id": "rupert", "name": "Rupert Giles" },
+			{ "id": "spike", "name": "Spike" },
+			{ "id": "tara", "name": "Tara MacLay" },
+			{ "id": "willow", "name": "Willow Rosenberg" },
+			{ "id": "xander", "name": "Xander Harris" }
+		],
+		"road-to-damnation-heroes": [
+			{ "id": "angel", "name": "Angel" },
+			{ "id": "faith", "name": "Faith Lehane" },
+			{ "id": "spike", "name": "Spike" },
+			{ "id": "willow", "name": "Willow Rosenberg" }
+		]
+	},
+	
+	"setup": [
+		{ "id": "big-bad", "label": "Big bad", "pool": "big-bads", "count": 1 },
+		{ "id": "scheme", "label": "Scheme", "pool": "schemes", "count": 1,
+			"exclude": [ { "when": { "ref": "players", "value": 1 }, "ids": [ "twilight-terror" ] } ]
+		},
+		{ "id": "scheme-twists", "label": "Scheme twists", "kind": "number", "min": 8, "max": 8 },
+		{ "id": "master-strike", "label": "Master strike cards", "kind": "number",
+			"min": { "by": "players", "map": { "1": { "by": "opt:advanced", "map": { "false": 1, "true": 5 } }, "default": 5 } },
+			"max": { "by": "players", "map": { "1": { "by": "opt:advanced", "map": { "false": 1, "true": 5 } }, "default": 5 } }
+		},
+		{ "id": "villains", "label": "Villains", "pool": "villains",
+			"count": { "by": "step:scheme", "map": {
+				"road-to-damnation": { "by": "players", "map": { "1": 0, "2": 1, "3": 2, "4": 2, "5": 3 } },
+				"default": { "by": "players", "map": { "1": 1, "2": 2, "3": 3, "4": 3, "5": 4 } } } },
+			"include": [
+				{ "when": { "all": [ { "any": [ { "ref": "opt:enforce_always_leads", "value": "always" },
+					{ "all": [ { "ref": "opt:enforce_always_leads", "value": "standard" }, { "ref": "players", "op": "!=", "value": 1 } ] } ] },
+					{ "ref": "step:big-bad", "value": "angelus" } ] }, "ids": [ "scourge-of-europe" ] },
+				{ "when": { "all": [ { "any": [ { "ref": "opt:enforce_always_leads", "value": "always" },
+					{ "all": [ { "ref": "opt:enforce_always_leads", "value": "standard" }, { "ref": "players", "op": "!=", "value": 1 } ] } ] },
+					{ "ref": "step:big-bad", "value": "first" } ] }, "ids": [ "firsts-minions" ] },
+				{ "when": { "all": [ { "any": [ { "ref": "opt:enforce_always_leads", "value": "always" },
+					{ "all": [ { "ref": "opt:enforce_always_leads", "value": "standard" }, { "ref": "players", "op": "!=", "value": 1 } ] } ] },
+					{ "ref": "step:big-bad", "value": "glorificus" } ] }, "ids": [ "glorys-minions" ] },
+				{ "when": { "all": [ { "any": [ { "ref": "opt:enforce_always_leads", "value": "always" },
+					{ "all": [ { "ref": "opt:enforce_always_leads", "value": "standard" }, { "ref": "players", "op": "!=", "value": 1 } ] } ] },
+					{ "ref": "step:big-bad", "value": "master" } ] }, "ids": [ "order-of-aurelius" ] },
+				{ "when": { "all": [ { "any": [ { "ref": "opt:enforce_always_leads", "value": "always" },
+					{ "all": [ { "ref": "opt:enforce_always_leads", "value": "standard" }, { "ref": "players", "op": "!=", "value": 1 } ] } ] },
+					{ "ref": "step:big-bad", "value": "mayor" } ] }, "ids": [ "mayors-minions" ] }
+			]
+		},
+		{ "id": "road-to-damnation-hero", "label": "Include hero in villain deck", "pool": "road-to-damnation-heroes", "count": 1,
+			"when": { "ref": "step:scheme", "op": "has", "value": "road-to-damnation" },
+			"exclude": [
+				{ "when": { "all": [ { "ref": "opt:allow-angel-angelus", "value": false }, { "ref": "step:big-bad", "value": "angelus" } ] },
+				"ids": [ "angel" ] } ]
+		},
+		{ "id": "convert-to-evil-hero", "label": "Include hero in villain deck", "pool": "heroes", "count": 1,
+			"when": { "ref": "step:scheme", "op": "has", "value": "convert-to-evil" },
+			"exclude": [
+				{ "when": { "all": [ { "ref": "opt:allow-angel-angelus", "value": false }, { "ref": "step:big-bad", "value": "angelus" } ] },
+				"ids": [ "angel" ] } ]
+		},
+		{ "id": "henchmen", "label": "Henchmen", "pool": "henchmen",
+			"count": { "by": "players", "map": { "1": 1, "2": 1, "3": 1, "4": 2, "5": 2 } },
+			"include": [ { "when": { "ref": "step:scheme", "value": "summon-the-uber-vamps" }, "ids": [ "turok-han" ] } ] },
+		{ "id": "solo-henchmen", "kind": "text", "text": "3 cards from henchmen group",
+			"when": { "ref": "players", "value": 1 } },
+		{ "id": "bystanders", "label": "Bystanders", "kind": "number",
+			"min": { "by": "players", "map": { "1": 1, "2": 2, "3": 8, "4": 8, "5": 12 } },
+			"max": { "by": "players", "map": { "1": 1, "2": 2, "3": 8, "4": 8, "5": 12 } } },
+		{ "id": "heroes", "label": "Heroes", "pool": "heroes",
+			"count": { "by": "players", "map": { "1": 3, "2": 5, "3": 5, "4": 5, "5": 6 } },
+			"excludeFrom": [ "road-to-damnation-hero", "convert-to-evil-hero" ],
+			"exclude": [
+				{ "when": { "all": [ { "ref": "opt:allow-angel-angelus", "value": false }, { "ref": "step:big-bad", "value": "angelus" } ] },
+				"ids": [ "angel" ] } ]
+		},
+		{ "id": "twilight-terror-courage-tokens", "label": "Starting courage tokens per player", "kind": "number", "min": 4, "max": 4,
+			"when": { "ref": "step:scheme", "op": "has", "value": "twilight-terror" } }
+	],
+	
+	"constraints": [
+	]
+}

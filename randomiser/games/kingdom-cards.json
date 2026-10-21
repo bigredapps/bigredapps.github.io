@@ -1,0 +1,39 @@
+{
+  "name": "Kingdom Cards",
+  "icon": "🃏",
+  "description": "Invented deck-builder: choose 10 supply piles. No image, so the icon is used.",
+  "theme": {"background": "#eef1f5", "glow": "#ffffff", "panel": "#ffffff", "border": "#c9d3e0", "accent": "#1f5fbf", "accentText": "#ffffff", "text": "#1b2330", "muted": "#5b6778", "warn": "#b3261e"},
+  "compact": true,
+  "players": { "min": 2, "max": 4, "default": 2 },
+  "options": [{ "id": "attacks", "label": "Allow attack cards", "type": "toggle", "default": true }],
+  "pools": {
+    "kingdom": [
+      { "id": "scriptorium", "name": "Scriptorium", "icon": "📜", "tags": ["draw"] },
+      { "id": "granary", "name": "Granary", "icon": "🌾", "tags": ["draw"] },
+      { "id": "harbour", "name": "Harbour", "icon": "⚓", "tags": ["draw"] },
+      { "id": "bazaar", "name": "Bazaar", "icon": "🏪", "tags": ["buy"] },
+      { "id": "fair", "name": "Fair", "icon": "🎪", "tags": ["buy"] },
+      { "id": "palisade", "name": "Palisade", "icon": "🪵", "tags": ["defence"] },
+      { "id": "forge", "name": "Forge", "icon": "🔨", "tags": ["trash"] },
+      { "id": "cellar", "name": "Cellar", "icon": "🍷", "tags": ["trash"] },
+      { "id": "mill", "name": "Mill", "icon": "🏭", "tags": ["vp"] },
+      { "id": "gardens", "name": "Gardens", "icon": "🌳", "tags": ["vp"] },
+      { "id": "raiders", "name": "Raiders", "icon": "🏴‍☠️", "tags": ["attack"], "when": { "ref": "opt:attacks", "value": true } },
+      { "id": "poisoner", "name": "Poisoner", "icon": "☠️", "tags": ["attack"], "when": { "ref": "opt:attacks", "value": true } }
+    ]
+  },
+  "setup": [
+    { "id": "kingdom", "label": "Kingdom piles", "pool": "kingdom", "count": 10 },
+    { "id": "first", "label": "First player", "kind": "number", "min": 1, "max": { "by": "players" } },
+    { "id": "curses", "label": "Curse pile size", "kind": "number",
+      "min": { "by": "players", "map": { "2": 10, "3": 20, "default": 30 } },
+      "max": { "by": "players", "map": { "2": 10, "3": 20, "default": 30 } } },
+    { "id": "defence", "kind": "text", "text": "Attacks are in play: keep the defence pile handy.",
+      "when": { "ref": "step:kingdom", "op": "hasTag", "value": "attack" } }
+  ],
+  "constraints": [
+    { "message": "Needs at least one card-draw pile", "cond": { "ref": "step:kingdom", "op": "hasTag", "value": "draw" } },
+    { "message": "Attacks need a defence pile",
+      "cond": { "any": [{ "not": { "ref": "step:kingdom", "op": "hasTag", "value": "attack" } }, { "ref": "step:kingdom", "op": "hasTag", "value": "defence" }] } }
+  ]
+}

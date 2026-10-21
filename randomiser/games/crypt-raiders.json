@@ -1,0 +1,421 @@
+{
+  "name": "Crypt Raiders",
+  "icon": "⚰️",
+  "image": "img/crypt-raiders.svg",
+  "description": "Invented co-op dungeon crawl, used here to demonstrate every feature.",
+  "theme": {
+    "background": "#1d1726",
+    "glow": "#2f2340",
+    "panel": "#2a2136",
+    "border": "#4a3d5c",
+    "accent": "#8fd16a",
+    "accentText": "#10200a",
+    "text": "#ece6f2",
+    "muted": "#b3a6c4",
+    "warn": "#ffb38a",
+    "font": "'Palatino Linotype',Palatino,Georgia,serif"
+  },
+  "players": {
+    "min": 1,
+    "max": 4,
+    "default": 3
+  },
+  "options": [
+    {
+      "id": "difficulty",
+      "label": "Difficulty",
+      "type": "choice",
+      "default": "normal",
+      "choices": [
+        {
+          "id": "easy",
+          "label": "Easy"
+        },
+        {
+          "id": "normal",
+          "label": "Normal"
+        },
+        {
+          "id": "hard",
+          "label": "Hard"
+        }
+      ]
+    },
+    {
+      "id": "frost",
+      "label": "Frost Caverns expansion",
+      "type": "toggle",
+      "default": false
+    }
+  ],
+  "pools": {
+    "heroes": [
+      {
+        "id": "knight",
+        "name": "Knight",
+        "icon": "🛡️",
+        "tags": [
+          "melee"
+        ],
+        "note": "Starts with a shield"
+      },
+      {
+        "id": "ranger",
+        "name": "Ranger",
+        "icon": "🏹",
+        "tags": [
+          "ranged"
+        ]
+      },
+      {
+        "id": "mage",
+        "name": "Mage",
+        "icon": "🔮",
+        "tags": [
+          "magic"
+        ]
+      },
+      {
+        "id": "cleric",
+        "name": "Cleric",
+        "icon": "✨",
+        "tags": [
+          "healer"
+        ]
+      },
+      {
+        "id": "rogue",
+        "name": "Rogue",
+        "icon": "🗡️",
+        "tags": [
+          "melee"
+        ]
+      },
+      {
+        "id": "druid",
+        "name": "Druid",
+        "icon": "🌿",
+        "tags": [
+          "healer",
+          "magic"
+        ],
+        "when": {
+          "ref": "opt:frost",
+          "value": true
+        }
+      }
+    ],
+    "bosses": [
+      {
+        "id": "lich",
+        "name": "The Lich",
+        "icon": "💀"
+      },
+      {
+        "id": "drake",
+        "name": "Cave Drake",
+        "icon": "🐉"
+      },
+      {
+        "id": "spider",
+        "name": "Brood Mother",
+        "icon": "🕷️"
+      },
+      {
+        "id": "giant",
+        "name": "Frost Giant",
+        "icon": "🧊",
+        "when": {
+          "ref": "opt:frost",
+          "value": true
+        }
+      },
+      {
+        "id": "demon",
+        "name": "Pit Demon",
+        "icon": "😈",
+        "note": "Not used on Easy",
+        "when": {
+          "ref": "opt:difficulty",
+          "op": "!=",
+          "value": "easy"
+        }
+      }
+    ],
+    "minions": [
+      {
+        "id": "rats",
+        "name": "Giant Rats",
+        "icon": "🐀"
+      },
+      {
+        "id": "bats",
+        "name": "Cave Bats",
+        "icon": "🦇"
+      },
+      {
+        "id": "goblins",
+        "name": "Goblins",
+        "icon": "👺"
+      },
+      {
+        "id": "slimes",
+        "name": "Slimes",
+        "icon": "🟢"
+      },
+      {
+        "id": "archers",
+        "name": "Skeleton Archers",
+        "icon": "🦴",
+        "when": {
+          "ref": "step:boss",
+          "op": "has",
+          "value": "lich"
+        }
+      },
+      {
+        "id": "spiderlings",
+        "name": "Spiderlings",
+        "icon": "🕸️",
+        "when": {
+          "ref": "step:boss",
+          "op": "has",
+          "value": "spider"
+        }
+      },
+      {
+        "id": "wolves",
+        "name": "Frost Wolves",
+        "icon": "🐺",
+        "when": {
+          "ref": "opt:frost",
+          "value": true
+        }
+      }
+    ],
+    "relics": [
+      {
+        "id": "lantern",
+        "name": "Everburning Lantern",
+        "icon": "🏮",
+        "weight": 3
+      },
+      {
+        "id": "boots",
+        "name": "Boots of Haste",
+        "icon": "👢",
+        "weight": 3
+      },
+      {
+        "id": "ring",
+        "name": "Ring of Warding",
+        "icon": "💍",
+        "weight": 2
+      },
+      {
+        "id": "crown",
+        "name": "Cursed Crown",
+        "icon": "👑",
+        "weight": 1,
+        "note": "Rare"
+      },
+      {
+        "id": "tome",
+        "name": "Forbidden Tome",
+        "icon": "📕",
+        "weight": 1,
+        "note": "Rare"
+      }
+    ],
+    "rooms": [
+      {
+        "id": "armory",
+        "name": "Armory",
+        "icon": "⚔️"
+      },
+      {
+        "id": "shrine",
+        "name": "Shrine",
+        "icon": "🕯️"
+      },
+      {
+        "id": "library",
+        "name": "Library",
+        "icon": "📚"
+      },
+      {
+        "id": "hall",
+        "name": "Flooded Hall",
+        "icon": "🌊"
+      },
+      {
+        "id": "pit",
+        "name": "Spike Pit",
+        "icon": "🪤"
+      }
+    ],
+    "curses": [
+      {
+        "id": "weak",
+        "name": "Weakness",
+        "icon": "🥀"
+      },
+      {
+        "id": "dark",
+        "name": "Darkness",
+        "icon": "🌑"
+      },
+      {
+        "id": "hunger",
+        "name": "Hunger",
+        "icon": "🍂"
+      },
+      {
+        "id": "madness",
+        "name": "Madness",
+        "icon": "🌀"
+      }
+    ]
+  },
+  "setup": [
+    {
+      "id": "heroes",
+      "label": "Heroes",
+      "kind": "perPlayer",
+      "pool": "heroes"
+    },
+    {
+      "id": "boss",
+      "label": "Boss",
+      "pool": "bosses",
+      "count": 1
+    },
+    {
+      "id": "minions",
+      "label": "Minion types",
+      "pool": "minions",
+      "count": {
+        "by": "opt:difficulty",
+        "map": {
+          "easy": 2,
+          "normal": 3,
+          "hard": 4
+        }
+      },
+      "note": "Which minions are available depends on the boss and expansion.",
+      "sort": true,
+      "include": [
+        {
+          "when": {
+            "ref": "step:boss",
+            "op": "has",
+            "value": "drake"
+          },
+          "ids": [
+            "goblins"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "relics",
+      "label": "Market relics",
+      "pool": "relics",
+      "count": {
+        "by": "players",
+        "map": {
+          "1": 3,
+          "2": 3,
+          "default": 4
+        }
+      },
+      "sort": true,
+      "exclude": [
+        {
+          "when": {
+            "ref": "opt:difficulty",
+            "value": "easy"
+          },
+          "ids": [
+            "crown"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "layout",
+      "label": "Room order",
+      "kind": "shuffle",
+      "pool": "rooms"
+    },
+    {
+      "id": "gold",
+      "label": "Starting gold each",
+      "kind": "number",
+      "min": {
+        "by": "opt:difficulty",
+        "map": {
+          "easy": 6,
+          "normal": 4,
+          "hard": 2
+        }
+      },
+      "max": {
+        "by": "opt:difficulty",
+        "map": {
+          "easy": 8,
+          "normal": 6,
+          "hard": 4
+        }
+      },
+      "inline": true
+    },
+    {
+      "id": "curses",
+      "label": "Starting curses",
+      "pool": "curses",
+      "count": {
+        "by": "opt:difficulty",
+        "map": {
+          "easy": 0,
+          "normal": 1,
+          "hard": 2
+        }
+      },
+      "inline": true
+    },
+    {
+      "id": "reminder",
+      "kind": "text",
+      "text": "Place the {step:boss} in the last room. Each hero starts with {step:gold} gold."
+    },
+    {
+      "id": "hardrule",
+      "kind": "text",
+      "text": "Hard mode: the {step:boss} acts twice per round.",
+      "when": {
+        "ref": "opt:difficulty",
+        "value": "hard"
+      }
+    }
+  ],
+  "constraints": [
+    {
+      "message": "3+ players need a healer",
+      "cond": {
+        "any": [
+          {
+            "ref": "players",
+            "op": "<",
+            "value": 3
+          },
+          {
+            "ref": "step:heroes",
+            "op": "hasTag",
+            "value": "healer"
+          }
+        ]
+      }
+    }
+  ]
+}
