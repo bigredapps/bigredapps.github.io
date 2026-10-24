@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Do You Want to Buy a Carpet?</title>
+<style>
+:root{--bg:#f3e8d6;--fg:#2b1d12;--pn:#fffaf0;--bd:#c9ae86;--ac:#b5481f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#241a12;--fg:#f1e3cc;--pn:#33261b;--bd:#5b4630;--ac:#e07a4a}}
+:root[data-theme=dark]{--bg:#241a12;--fg:#f1e3cc;--pn:#33261b;--bd:#5b4630;--ac:#e07a4a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,Segoe UI,sans-serif}
+button,select{font:inherit;padding:.4em .9em;border-radius:8px;border:1px solid var(--bd);background:var(--pn);color:var(--fg)}
+button{background:var(--ac);color:#fff;border:0;cursor:pointer;font-weight:600}button:disabled{opacity:.4;cursor:default}
+#st{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--pn);border-bottom:2px solid var(--ac);padding:.5em .8em;display:flex;gap:.6em;align-items:center;flex-wrap:wrap}#st span{flex:1;min-width:200px}
+#main{display:flex;flex-wrap:wrap;gap:12px;padding:10px;align-items:flex-start}
+#bw{flex:3 1 340px;min-width:0}#side{flex:1 1 230px;min-width:220px;display:grid;gap:8px}
+.box{background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:8px}
+#board{display:grid;width:min(100%,calc(78vh*var(--ar,1)));margin:auto;padding:2.5%;border-radius:12px;background:#222 center/cover}
+.sl,.cell{aspect-ratio:1;position:relative}
+.sl{display:flex;align-items:center;justify-content:center;border:1.5px dashed #fff8;background:#0005;color:#fffc;font-size:.55rem;text-transform:uppercase}
+.cell{background:#fffaf0d8;border:1.5px solid #111}.cell:before{content:"";position:absolute;inset:0;background:linear-gradient(to top left,transparent 48.5%,#111 48.5%,#111 51.5%,transparent 51.5%)}
+.t{position:absolute;left:7%;right:7%;top:20%;bottom:20%;background-size:100% auto;background-repeat:no-repeat;background-color:#fff;border-radius:3px}.t.cb{background-position:center top}.t.pt{background-position:center bottom}
+.bk{position:absolute;inset:14%;background:repeating-linear-gradient(45deg,#2a5db0 0 5px,#3a6fc4 5px 10px);border:2px solid #fff;border-radius:4px;z-index:1}
+.bk:after,.mk{content:"";position:absolute;left:50%;top:50%;width:46%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:var(--c);border:2px solid gold}
+.mk{border-color:#fff;display:flex;align-items:center;justify-content:center;font:700 .8rem system-ui;box-shadow:0 1px 4px #0008;z-index:2;width:48%}.mk.pr{outline:3px solid gold}.mk.gh{opacity:.55}
+.h{position:absolute;font:700 .6rem system-ui;padding:0 3px;border-radius:3px;z-index:1;color:#000;background:#fffd}.ha{left:7%;top:7%}.hb{right:7%;bottom:7%}.hF{background:#4c4;color:#000}.hH{background:#fd4}
+.ok{outline:3px solid #ffd24a;outline-offset:-3px;cursor:pointer;animation:p 1s infinite alternate}.sel{outline:4px solid #35d07f;outline-offset:-4px}@keyframes p{to{outline-color:#ffd24a55}}
+.pc{width:62px;aspect-ratio:.716;border:3px solid #2a5db0;border-radius:6px;background-color:#fff;background-size:100% 100%;background-repeat:no-repeat;cursor:pointer;flex:none}.pc.sel{transform:translateY(-8px);border-color:#35d07f}
+.cu{width:64px;aspect-ratio:136/212;background:center/contain no-repeat;flex:none;cursor:default}.cu.ok{cursor:pointer}.cu.sel{transform:translateY(-6px)}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end}#hand{padding:6px 10px 14px}
+#md{position:fixed;inset:0;background:#000a;z-index:9;display:none;overflow:auto;padding:12px}#md>div{max-width:640px;margin:auto;background:var(--pn);border-radius:14px;padding:16px;border:2px solid var(--ac)}
+#md img{width:100%;max-width:300px;border-radius:12px;display:block;margin:0 auto 8px}h2{margin:.2em 0}.dot{display:inline-block;width:.9em;height:.9em;border-radius:50%;border:1px solid #888;vertical-align:-1px}
+#lg{font-size:.82rem;max-height:150px;overflow:auto}small{opacity:.75}.win{border:2px solid gold}
+</style></head><body>
+<div id="st"><span id="msg">Loading…</span><span id="bt" style="flex:none;min-width:0"></span></div>
+<div id="main"><div id="bw"><div id="board"></div></div><div id="side"></div></div><div id="hand"></div><div id="md"><div id="mc"></div></div>
+<script>
+const IMG='images/'; // folder holding board.jpg, cover.jpg, prod-<colour>-<pattern>.png, cust-<colour>-<pattern>.png
+const COL=['red','yellow','green','blue','pink'],PAT=['spotty','stripey','plain','zigzag','tartan'];
+const PC=['#222','#f2f2f2','#e67e22','#8e44ad','#8d5524'];
+const CFG={2:{c:4,r:3,m:6,b:9,pre:3},3:{c:4,r:4,m:5,b:7,pre:2},4:{c:5,r:5,m:6,b:6,pre:0},5:{c:5,r:5,m:5,b:5,pre:0}};
+const PERS={
+Haggler:{n:'Hamid the Haggler',d:'Greedy: grabs whatever pays off right now',K:0,rp:1,dn:0,th:.3,dv:-1},
+Planner:{n:'Prudence the Planner',d:'Weighs likely futures; replaces carefully',K:8,rp:1,dn:0,th:.3,dv:1},
+Saboteur:{n:'Sultana the Saboteur',d:'Keeps rivals’ stalls starved of wool',K:6,rp:.3,dn:.8,th:.3,dv:1},
+Gambler:{n:'Gambit Gul',d:'Loves replacing cards and swapping stalls',K:6,rp:0,dn:.2,th:-.01,dv:-1},
+Wanderer:{n:'Wally the Wanderer',d:'Plays at random (easy)',rand:1}};
+const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms)),rnd=n=>Math.floor(Math.random()*n);
+const shuf=a=>{for(let i=a.length;i>1;){const j=rnd(i--);[a[i],a[j]]=[a[j],a[i]]}return a};
+const sk=(r,c)=>r+','+c,deck=()=>COL.flatMap(c=>PAT.map(p=>({c,p})));
+let G=null,hint=true;
+(()=>{let s='';for(const c of COL)for(const p of PAT)s+=`.pr-${c}-${p}{background-image:url(${IMG}prod-${c}-${p}.png)}.k-${c}-${p}{background-image:url(${IMG}cust-${c}-${p}.png)}`;
+s+=`#board{background-image:url(${IMG}board.jpg)}`;document.head.appendChild(Object.assign(document.createElement('style'),{textContent:s}))})();;
+// ---------- rules ----------
+const triV=(c,p,cu)=>{if(!c||!p)return 0;let b=0;for(const q of cu){const m=(q.c==c)+(q.p==p);if(m==2)return 2;b=Math.max(b,m)}return b};
+const pts=(a,b)=>({22:7,21:4,20:3,11:2,10:1})[Math.max(a,b)*10+Math.min(a,b)]||0;
+function cellV(v,r,c,cu,f){const g=k=>v[k]||(f&&f[k])||null,L=g('L'+r),T=g('T'+c),B=g('B'+c),R=g('R'+r);return[triV(L&&L.c,T&&T.p,cu),triV(B&&B.c,R&&R.p,cu)]}
+const vals=()=>{const v={};for(const k in G.slots)v[k]=G.slots[k].card;return v};
+const cardOf=c=>`<div class="cu k-${c.c}-${c.p}"></div>`;
+function mine(v,pi,cu,fs){let t=0;for(const f of fs)G.grid.forEach((row,r)=>row.forEach((o,c)=>{if(o==pi){const[a,b]=cellV(v,r,c,cu,f);t+=pts(a,b)}}));return t/fs.length}
+function mkF(K){return K?[...Array(K)].map(()=>{const f={};for(const k in G.slots)f[k]={c:COL[rnd(5)],p:PAT[rnd(5)]};return f}):[null]}
+function oppT(v,pi){let t=0;G.grid.forEach((row,r)=>row.forEach((o,c)=>{if(o>=0&&o!=pi)t+=(v['L'+r]&&v['T'+c]?1:0)+(v['B'+c]&&v['R'+r]?1:0)}));return t}
+const mk=o=>{const a=[];G.grid.forEach((row,r)=>row.forEach((x,c)=>x==o&&!G.pc.has(sk(r,c))&&a.push([r,c])));return a};
+const swp=(a,b)=>{const t=G.grid[a[0]][a[1]];G.grid[a[0]][a[1]]=G.grid[b[0]][b[1]];G.grid[b[0]][b[1]]=t};
+const okSlots=()=>Object.keys(G.slots).filter(k=>!G.slots[k].fd&&!(G.round==1&&G.slots[k].pre));
+const freeCells=()=>{const a=[];G.grid.forEach((row,r)=>row.forEach((o,c)=>o<0&&a.push([r,c])));return a};
+// ---------- computer players ----------
+function aiCust(pi,cs){const pe=PERS[G.P[pi].ai];let best=[],bs=-9;if(pe.rand)return shuf([0,1,2,3,4]).slice(0,3);
+for(let a=0;a<5;a++)for(let b=a+1;b<5;b++)for(let c=b+1;c<5;c++){const t=[cs[a],cs[b],cs[c]],s=pe.dv*(new Set(t.map(x=>x.c)).size+new Set(t.map(x=>x.p)).size)+Math.random();if(s>bs){bs=s;best=[a,b,c]}}return best}
+const fit=(cd,cu)=>cu.reduce((s,q)=>s+(q.c==cd.c)+(q.p==cd.p)+(q.c==cd.c&&q.p==cd.p),0);
+function aiDraft(pi){const P=G.P[pi];if(PERS[P.ai].rand)return rnd(P.hand.length);let b=0,bs=-1;P.hand.forEach((cd,i)=>{const s=fit(cd,P.cust)+Math.random()*.5;if(s>bs){bs=s;b=i}});return b}
+function aiPre(pi){const P=G.P[pi],ks=okSlots();let b=0,bs=-1;P.hand.forEach((cd,i)=>{const s=fit(cd,P.cust)+Math.random();if(s>bs){bs=s;b=i}});return{card:b,slot:ks[rnd(ks.length)]}}
+function aiPlay(pi){const P=G.P[pi],pe=PERS[P.ai],ks=okSlots(),cells=freeCells();
+if(pe.rand)return{card:rnd(P.hand.length),slot:ks[rnd(ks.length)],cell:cells[rnd(cells.length)]};
+const v0=vals(),fs=mkF(pe.K);let best={s:-1e9};
+P.hand.forEach((cd,i)=>ks.forEach(k=>{const v={...v0,[k]:cd},pen=(G.slots[k].card?pe.rp:0)+(pe.dn?pe.dn*oppT(v,pi):0);
+for(const[r,c]of cells){G.grid[r][c]=pi;const s=mine(v,pi,P.cust,fs)-pen+Math.random()*.02;G.grid[r][c]=-1;if(s>best.s)best={s,card:i,slot:k,cell:[r,c]}}}));return best}
+function aiSwap(q,rp){const P=G.P[q],pe=PERS[P.ai],A1=mk(q),B1=mk(rp);if(!A1.length||!B1.length)return null;
+if(pe.rand)return Math.random()<.4?[A1[rnd(A1.length)],B1[rnd(B1.length)]]:null;
+const v=vals(),fs=mkF(pe.K),b0=mine(v,q,P.cust,fs);let best=null,bg=pe.th;
+for(const a of A1)for(const b of B1){swp(a,b);const g=mine(v,q,P.cust,fs)-b0;swp(a,b);if(g>bg){bg=g;best=[a,b]}}return best}
+// ---------- UI ----------
+const log=t=>{G.log.unshift(t)};
+function render(){if(!G)return;const g=G,bd=$('#board'),m=g.mode,s=g.sel||{};bd.style.setProperty('--ar',(g.cols+2)/(g.rows+2));bd.style.gridTemplateColumns=`repeat(${g.cols+2},1fr)`;
+const cu0=g.P[0].cust,v=vals();let h='';
+for(let y=0;y<g.rows+2;y++)for(let x=0;x<g.cols+2;x++){const T=y==0,B=y==g.rows+1,L=x==0,R=x==g.cols+1;
+if((T||B)&&(L||R)){h+='<i></i>';continue}
+if(T||B||L||R){const k=T?'T'+(x-1):B?'B'+(x-1):L?'L'+(y-1):'R'+(y-1),S=g.slots[k],pat=T||R,cl=(m=='play'||m=='pre')&&okSlots().includes(k)?' ok':'';
+let in_='';if(S.card)in_=`<div class="t pr-${S.card.c}-${S.card.p} ${pat?'pt':'cb'}"></div>`;else in_=pat?'Pattern':'Colour';
+if(S.fd)in_+=`<div class="bk" style="--c:${PC[S.fd.pl]}"></div>`;
+if(s.slot==k&&s.card!=null){const cd=g.P[0].hand[s.card];in_+=`<div class="t pr-${cd.c}-${cd.p} ${pat?'pt':'cb'}" style="opacity:.75"></div>`}
+h+=`<div class="sl${cl}${s.slot==k?' sel':''}" data-t="slot" data-v="${k}">${in_}</div>`}
+else{const r=y-1,c=x-1,o=g.grid[r][c],pr=g.pc.has(sk(r,c));let cl='';
+if((m=='play')&&o<0)cl=' ok';if(m=='swap'&&!pr&&(o==0||o==g.sw.rp))cl=' ok';
+if(m=='swap'&&[g.sw.a,g.sw.b].some(z=>z&&z[0]==r&&z[1]==c))cl=' sel';if(m=='play'&&s.cell&&s.cell[0]==r&&s.cell[1]==c)cl=' sel';
+let in_='';if(hint){const[a,b]=cellV(v,r,c,cu0),f=(L2,T2)=>v[L2]&&v[T2],lb=n=>n==2?'F':n==1?'H':'–';
+if(f('L'+r,'T'+c))in_+=`<u class="h ha h${lb(a)}">${lb(a)}</u>`;if(f('B'+c,'R'+r))in_+=`<u class="h hb h${lb(b)}">${lb(b)}</u>`}
+if(o>=0)in_+=`<b class="mk${pr?' pr':''}" style="--c:${PC[o]};color:${o==1?'#222':'#fff'}">${g.P[o].name[0]}</b>`;
+else if(m=='play'&&s.cell&&s.cell[0]==r&&s.cell[1]==c)in_+=`<b class="mk gh" style="--c:${PC[0]};color:#fff">Y</b>`;
+h+=`<div class="cell${cl}" data-t="cell" data-v="${r},${c}">${in_}</div>`}}
+bd.innerHTML=h;
+let sd=`<div class="box"><b>Players</b> <small>Round ${g.round||'–'} of ${g.D}</small>`;
+g.P.forEach(p=>sd+=`<div><span class="dot" style="background:${PC[p.i]}"></span> ${p.name}${p.i==g.first&&g.round?' ①':''} <small>stalls left ${p.ml}${p.i?' · cards '+p.hand.length:''}</small></div>`);
+sd+=`</div><div class="box"><b>Your customers</b><div class="row">${cu0.map(cardOf).join('')}</div><label><input type="checkbox" ${hint?'checked':''} onchange="hint=this.checked;render()"> Show match hints (F/H per triangle)</label></div><div class="box"><b>Log</b><div id="lg">${g.log.slice(0,40).join('<br>')}</div></div>`;
+$('#side').innerHTML=sd;
+let hd='';const P0=g.P[0];
+if(m=='play'||m=='pre'||m=='draft'){hd=`<b>Your ${m=='draft'?'cards to pick from':'production cards'}</b><div class="row">`+P0.hand.map((c,i)=>`<div class="pc pr-${c.c}-${c.p}${s.card==i?' sel':''}" data-t="card" data-v="${i}"></div>`).join('')+'</div>';
+if(m=='draft'&&P0.drafted.length)hd+=`<small>Kept so far:</small><div class="row">`+P0.drafted.map(c=>`<div class="pc pr-${c.c}-${c.p}" style="width:44px;cursor:default"></div>`).join('')+'</div>'}
+$('#hand').innerHTML=hd;
+$('#msg').textContent=g.msg||'';let bt='';
+if(m=='play'||m=='pre'){const ok=s.card!=null&&s.slot&&(m=='pre'||s.cell);bt=`<button data-t="go" ${ok?'':'disabled'}>Play</button>`}
+if(m=='swap')bt=`<button data-t="go" ${g.sw.a&&g.sw.b?'':'disabled'}>Swap</button> <button data-t="pass" style="background:#777">Pass</button>`;
+$('#bt').innerHTML=bt}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-t]');if(t&&G&&G.on)G.on(t.dataset.t,t.dataset.v)});
+const show=h=>{$('#mc').innerHTML=h;$('#md').style.display='block';$('#md').scrollTop=0},hide=()=>$('#md').style.display='none';
+function ask(mode,msg,fn){return new Promise(res=>{G.mode=mode;G.msg=msg;G.sel={card:null,slot:null,cell:null};G.on=(t,v)=>{if(fn(t,v,res)!==false)render()};render()})}
+const done=(res,val)=>{G.on=null;G.mode='';G.sel=null;res(val);return false};
+const humanMove=(mode,msg)=>ask(mode,msg,(t,v,res)=>{const s=G.sel;
+if(t=='card')s.card=+v;if(t=='slot'&&okSlots().includes(v))s.slot=v;
+if(t=='cell'&&mode=='play'){const[r,c]=v.split(',').map(Number);if(G.grid[r][c]<0)s.cell=[r,c]}
+if(t=='go'&&s.card!=null&&s.slot&&(mode=='pre'||s.cell))return done(res,{...s})});
+const humanSwap=rp=>{G.sw={a:null,b:null,rp};return ask('swap',`${G.P[rp].name} replaced a card. Pick one of your stalls and one of theirs to swap (not those with a gold ring), or pass.`,(t,v,res)=>{
+if(t=='cell'){const[r,c]=v.split(',').map(Number),o=G.grid[r][c];if(G.pc.has(sk(r,c)))return;if(o==0)G.sw.a=[r,c];else if(o==rp)G.sw.b=[r,c]}
+if(t=='pass')return done(res,false);if(t=='go'&&G.sw.a&&G.sw.b){swp(G.sw.a,G.sw.b);log(`You swapped a stall with ${G.P[rp].name}.`);return done(res,true)}})};
+const pickCust=cs=>new Promise(res=>{const sel=new Set();const dr=()=>{show(`<h2>Choose 3 customers to keep</h2><p>These stay secret until the final scoring. ${cs.length?'':''}</p><div class="row">${cs.map((c,i)=>`<div class="cu k-${c.c}-${c.p} ok${sel.has(i)?' sel':''}" style="width:90px" onclick="K(${i})"></div>`).join('')}</div><p><button ${sel.size==3?'':'disabled'} onclick="KK()">Keep these 3</button></p>`)};
+window.K=i=>{sel.has(i)?sel.delete(i):sel.size<3&&sel.add(i);dr()};window.KK=()=>{hide();res([...sel])};dr()});
+// ---------- game flow ----------
+async function playGame(n,pers){const cf=CFG[n];
+G={n,cols:cf.c,rows:cf.r,D:cf.b-cf.pre,pre:cf.pre,slots:{},grid:[...Array(cf.r)].map(()=>Array(cf.c).fill(-1)),pc:new Set(),log:[],first:rnd(n),round:0,on:null,mode:'',msg:'',
+P:[...Array(n)].map((_,i)=>({i,ai:i?pers[i-1]:null,name:i?PERS[pers[i-1]].n:'You',cust:[],hand:[],drafted:[],ml:cf.m}))};
+for(let c=0;c<cf.c;c++){G.slots['T'+c]={card:null,fd:null,pre:false};G.slots['B'+c]={card:null,fd:null,pre:false}}
+for(let r=0;r<cf.r;r++){G.slots['L'+r]={card:null,fd:null,pre:false};G.slots['R'+r]={card:null,fd:null,pre:false}}
+const cd=shuf(deck()),pd=shuf(deck());render();
+const deal=cd.splice(0,5*n);for(let i=n-1;i>=0;i--){const cs=deal.slice(i*5,i*5+5),ch=i?aiCust(i,cs):await pickCust(cs);G.P[i].cust=ch.map(j=>cs[j])}
+G.P.forEach(p=>p.hand=pd.splice(0,cf.b));render();
+if(cf.pre){for(let k=0;k<cf.pre;k++){for(let j=0;j<n;j++){const pi=(G.first+j)%n,P=G.P[pi];let mv;
+if(pi==0)mv=await humanMove('pre',`Pre-game: play a production card face down into any free slot (${k+1} of ${cf.pre}).`);else mv=aiPre(pi);
+const c=P.hand.splice(mv.card,1)[0];G.slots[mv.slot].fd={pl:pi,card:c};G.slots[mv.slot].pre=true;log(`${P.name} played a pre-game card face down.`);G.mode='';G.msg='';render();await sleep(pi?350:0)}}
+for(const k in G.slots){const S=G.slots[k];if(S.fd){S.card=S.fd.card;S.fd=null}}log('Pre-game cards revealed.');G.msg='Pre-game cards revealed…';render();await sleep(1200)}
+// draft
+let hands=G.P.map(p=>p.hand);
+while(hands[0].length){const picks=G.P.map((p,i)=>i?aiDraft(i):0);
+if(hands[0].length>1){G.P[0].hand=hands[0];picks[0]=await ask('draft',`Draft: keep one card; the rest pass to ${G.P[1%n].name}.`,(t,v,res)=>{if(t=='card')return done(res,+v)})}
+const nh=[];G.P.forEach((p,i)=>{const c=hands[i].splice(picks[i],1)[0];p.drafted.push(c);nh[(i+1)%n]=hands[i]});hands=nh;G.P.forEach((p,i)=>p.hand=hands[i])}
+G.P.forEach(p=>{p.hand=p.drafted;p.drafted=[]});G.mode='';log('Draft complete.');
+for(G.round=1;G.round<=G.D;G.round++){G.pc.clear();log(`<b>Round ${G.round}</b> – ${G.P[G.first].name} goes first.`);G.fdBy=[];
+for(let j=0;j<n;j++){const pi=(G.first+j)%n,P=G.P[pi];let mv;
+if(pi==0)mv=await humanMove('play','Your turn: choose a production card, a free slot (for the card) and an empty square (for your stall).');
+else{G.msg=`${P.name} is thinking…`;render();await sleep(60);mv=aiPlay(pi)}
+const c=P.hand.splice(mv.card,1)[0];G.slots[mv.slot].fd={pl:pi,card:c};G.fdBy[pi]=mv.slot;G.grid[mv.cell[0]][mv.cell[1]]=pi;G.pc.add(sk(...mv.cell));P.ml--;
+log(`${P.name} played a card${G.slots[mv.slot].card?' onto an existing one':''} and set up a stall.`);G.mode='';G.msg='';render();await sleep(pi?400:0)}
+for(let j=0;j<n;j++){const pi=(G.first+j)%n,P=G.P[pi],S=G.slots[G.fdBy[pi]],old=S.card;S.card=S.fd.card;S.fd=null;
+log(`${P.name} revealed ${S.card.c} ${S.card.p}${old?' replacing '+old.c+' '+old.p:''}.`);G.msg=`${P.name} reveals a production card…`;render();await sleep(800);
+if(old)for(let q=1;q<n;q++){const w=(pi+q)%n,A1=mk(w),B1=mk(pi);if(!A1.length||!B1.length)continue;let did=false;
+if(w==0)did=await humanSwap(pi);else{const r=aiSwap(w,pi);if(r){swp(r[0],r[1]);did=true;log(`${G.P[w].name} swapped a stall with ${P.name}.`)}}
+G.mode='';G.msg='';render();if(did){await sleep(600);break}}}
+G.pc.clear();G.first=(G.first+1)%n;render()}
+G.round=G.D;G.msg='Game over – final scoring!';render();finish()}
+function finish(){const v=vals(),R=G.P.map(p=>{let tot=0,c={7:0,4:0,3:0},ln=[];G.grid.forEach((row,r)=>row.forEach((o,cc)=>{if(o!=p.i)return;const[a,b]=cellV(v,r,cc,p.cust),x=pts(a,b),l=n=>n==2?'F':n==1?'H':'–';tot+=x;if(c[x]!==undefined)c[x]++;ln.push(`${l(a)} + ${l(b)} = ${x}`)}));return{p,tot,c,ln}});
+const key=r=>[r.tot,r.c[7],r.c[4],r.c[3]],cmp=(a,b)=>{for(let i=0;i<4;i++)if(key(a)[i]!=key(b)[i])return key(b)[i]-key(a)[i];return 0};
+R.sort(cmp);let h=`<h2>Final scores</h2>`;
+R.forEach(r=>{const w=!cmp(r,R[0]);h+=`<div class="box${w?' win':''}" style="margin:8px 0"><b><span class="dot" style="background:${PC[r.p.i]}"></span> ${r.p.name}: $${r.tot}</b> ${w?'🏆':''}<br><small>F+F ${r.c[7]} · F+H ${r.c[4]} · F ${r.c[3]}</small><div class="row">${r.p.cust.map(cardOf).join('')}</div><small>${r.ln.join(' &nbsp;|&nbsp; ')}</small></div>`});
+show(h+`<p><button onclick="hide()">View board</button> <button onclick="menu()">New game</button></p>`)}
+function menu(){const ks=Object.keys(PERS),opt=(i)=>ks.map((k,j)=>`<option value="${k}" ${j==(i%ks.length)?'selected':''}>${PERS[k].n} – ${PERS[k].d}</option>`).join('');
+const dr=()=>{const n=+$('#np').value;$('#op').innerHTML=[...Array(n-1)].map((_,i)=>`<p>Opponent ${i+1}: <select class="os">${opt(i+1)}</select></p>`).join('')};
+show(`<img src="${IMG}cover.jpg" alt=""><h2>Do You Want to Buy a Carpet?</h2><p>Players: <select id="np" onchange="dr()">${[2,3,4,5].map(n=>`<option ${n==3?'selected':''}>${n}</option>`).join('')}</select></p><div id="op"></div><p><button onclick="go()">Start game</button></p>`);window.dr=dr;dr()}
+window.go=()=>{const p=[...document.querySelectorAll('.os')].map(s=>s.value);hide();playGame(+$('#np').value,p)};
+menu();
+</script></body></html>
